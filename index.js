@@ -42,7 +42,8 @@ module.exports = {
       runSequence = runSequence || require('run-sequence').use(gulp);
 
       // Save references to original functions.
-      var originalGulpTask = gulp.task;
+      var originalGulpTask = gulp.task,
+        originalGulpWatch = gulp.watch;
 
       // Shim tasks.
       gulp.task = function (taskName) {
@@ -62,7 +63,15 @@ module.exports = {
         if (task) {
           shimmedArgs.push(task);
         }
-        originalGulpTask.apply(this, shimmedArgs);
+        return originalGulpTask.apply(this, shimmedArgs);
+      };
+
+      gulp.watch = function() {
+        var glob = arguments[0],
+          opts = arguments.length > 2 ? arguments[1] : {},
+          tasks = arguments.length > 2 ? arguments[2] : arguments[1],
+          namespacedTasks = nsArrayRecursive(tasks);
+        return originalGulpWatch.apply(this, [glob, opts, namespacedTasks]);
       };
 
       var shimmedRunSequence = function () {
