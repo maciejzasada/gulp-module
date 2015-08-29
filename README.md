@@ -25,6 +25,8 @@ module.exports = require('gulp-module').define('moduleName', function (gulp, run
 };
 ```
 
+*Returns:* {String} module name (namespace).
+
 ## Task namespacing
 All tasks are being automatically namespaced with the module name.
 E.g. task `build` becomes `moduleName:build`.
@@ -32,8 +34,12 @@ E.g. task `build` becomes `moduleName:build`.
 
 ## Importing modules
 Modules can be imported in parent gulpfiles as any node module with `require`.
+A `gulp` instance needs to be supplied as shown below.
 
-E.g. `require('./module/gulpfile.js');`
+```javascript
+var gulp = require('gulp');
+require('./module/gulpfile.js')(gulp);
+```
 
 Then, tasks can be introduced in the parent's tasks as dependencies or in `runSequence` calls.
 

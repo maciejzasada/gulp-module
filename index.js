@@ -99,6 +99,9 @@ module.exports = {
 
       // Deregister namespace.
       namespaces.pop();
+
+      // Return the namespace name.
+      return namespace;
     };
 
     // Return or execute depending on whether the module is imported or run directly.
