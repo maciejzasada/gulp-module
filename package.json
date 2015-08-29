@@ -1,0 +1,30 @@
+{
+  "name": "gulp-module",
+  "version": "0.0.1",
+  "description": "Gulp submodules with namespaces and direct execution support.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maciejzasada/gulp-module.git"
+  },
+  "keywords": [
+    "gulp",
+    "module",
+    "submodule",
+    "namespace",
+    "ns"
+  ],
+  "author": "Maciej Zasada <hello@maciejzasada.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maciejzasada/gulp-module/issues"
+  },
+  "homepage": "https://github.com/maciejzasada/gulp-module#readme",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "run-sequence": "^1.1.2"
+  }
+}
