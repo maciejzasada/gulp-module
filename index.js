@@ -3,9 +3,44 @@
  * @license MIT
  */
 
-var namespaces = [];
+var path = require('path'),
+  glob = require('glob'),
+  minimatch = require('minimatch'),
+
+  SEPARATOR = ':',
+
+  namespaces = [],
+  loadedNamespaces = [];
+
 
 module.exports = {
+  SEPARATOR: SEPARATOR,
+
+  load: function (gulpfilePath, gulp) {
+    var namespace = require(gulpfilePath)(gulp);
+    loadedNamespaces.push(namespace);
+    console.log('[gulp-module] loaded module:', namespace);
+  },
+
+  loadAll: function (folderPath, gulp) {
+    var moduleGulpfiles = glob.sync(path.resolve(path.join(folderPath, '/*(!(node_modules))/gulpfile.js'))),
+      i;
+    for (i = 0; i < moduleGulpfiles.length; ++i) {
+      this.load(moduleGulpfiles[i], gulp);
+    }
+  },
+
+  task: function (name, moduleFilter) {
+    moduleFilter = moduleFilter || '*';
+    return loadedNamespaces.map(function (namespace) {
+      if (minimatch(namespace, moduleFilter)) {
+        return namespace + SEPARATOR + taskName;
+      }
+    }).filter(function (item) {
+      return !!item;
+    });
+  },
+
   define: function (namespace, definition, directExecution) {
     var separator = ':';
 
@@ -105,7 +140,7 @@ module.exports = {
     };
 
     // Return or execute depending on whether the module is imported or run directly.
-    if (module.parent.parent.filename.indexOf('gulpfile.js') === -1) {
+    if (module.parent.parent.filename.indexOf('gulp-module/index.js') === -1) {
       var gulp = require('gulp'),
         runSequence = require('run-sequence').use(gulp);
       namespacedModuleDefinition(gulp, runSequence);
