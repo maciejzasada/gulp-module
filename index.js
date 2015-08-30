@@ -34,7 +34,7 @@ module.exports = {
     moduleFilter = moduleFilter || '*';
     return loadedNamespaces.map(function (namespace) {
       if (minimatch(namespace, moduleFilter)) {
-        return namespace + SEPARATOR + taskName;
+        return namespace + SEPARATOR + name;
       }
     }).filter(function (item) {
       return !!item;
