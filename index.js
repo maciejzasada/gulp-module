@@ -30,15 +30,23 @@ module.exports = {
     }
   },
 
-  task: function (name, moduleFilter) {
-    moduleFilter = moduleFilter || '*';
-    return loadedNamespaces.map(function (namespace) {
-      if (minimatch(namespace, moduleFilter)) {
-        return namespace + SEPARATOR + name;
+  tasks: function (name, moduleFilter) {
+    if (typeof name === 'string') {
+      moduleFilter = moduleFilter || '*';
+      return loadedNamespaces.map(function (namespace) {
+        if (minimatch(namespace, moduleFilter)) {
+          return namespace + SEPARATOR + name;
+        }
+      }).filter(function (item) {
+        return !!item;
+      });
+    } else {
+      var result = [], i;
+      for (i = 0; i < name.length; ++i) {
+        result = result.concat(this.tasks(name[i], moduleFilter));
       }
-    }).filter(function (item) {
-      return !!item;
-    });
+      return result;
+    }
   },
 
   define: function (namespace, definition, directExecution) {
@@ -77,8 +85,7 @@ module.exports = {
       runSequence = runSequence || require('run-sequence').use(gulp);
 
       // Save references to original functions.
-      var originalGulpTask = gulp.task,
-        originalGulpWatch = gulp.watch;
+      var originalGulpTask = gulp.task;
 
       // Shim tasks.
       gulp.task = function (taskName) {
@@ -99,14 +106,6 @@ module.exports = {
           shimmedArgs.push(task);
         }
         return originalGulpTask.apply(this, shimmedArgs);
-      };
-
-      gulp.watch = function() {
-        var glob = arguments[0],
-          opts = arguments.length > 2 ? arguments[1] : {},
-          tasks = arguments.length > 2 ? arguments[2] : arguments[1],
-          namespacedTasks = nsArrayRecursive(tasks);
-        return originalGulpWatch.apply(this, [glob, opts, namespacedTasks]);
       };
 
       var shimmedRunSequence = function () {

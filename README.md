@@ -50,14 +50,15 @@ Then, tasks can be introduced in the parent's tasks as dependencies or in `runSe
 ## Getting submodule task names
 Tasks from within the submodules are namespaced with the module name and the separator between the namespace and the task name being a `:`.
 
-However, it is safer to query a child task using the provided `gulpModule.task` function.
+However, it is safer to query a child task using the provided `gulpModule.tasks` function.
 
-The `gulpModule.task` function also provides a `minimatch` filter so you can even query a group of all loaded tasks.
+The `gulpModule.tasks` function also provides a `minimatch` filter so you can even query a group of all loaded tasks.
 
 E.g.
 ```javascript
-gulpModule.task('build', 'desktop');  // returns ['desktop:build']
-gulpModule.task('clean', '*');  // returns clean task in all loaded namespaces, e.g. ['desktop:clean', 'mobile:clean']
+gulpModule.tasks('build', 'desktop');  // returns ['desktop:build']
+gulpModule.tasks('clean', '*');  // returns clean task in all loaded namespaces, e.g. ['desktop:clean', 'mobile:clean']
+gulpModule.tasks(['coffee', 'sass'], 'mobile');  // returns ['mobile:coffee', 'mobile:sass']
 ```
 
 
